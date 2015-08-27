@@ -28,9 +28,3 @@ for k in keys:
 	cmds[k] = lambda k=k: keypress(k)
 def get_command(name):
 	return cmds.get(name.strip().lower())
-
-while True:
-	a = input()
-	c = get_command(a)
-	if c:
-		c()

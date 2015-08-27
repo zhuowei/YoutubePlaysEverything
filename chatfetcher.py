@@ -23,7 +23,6 @@ class FetchTube:
 		url = URL_TEMPLATE.format(video_id=self.video_id,
 			time = self.last_time,
 			counter = rc)
-		print(url)
 		with urllib.request.urlopen(url) as indata:
 			outxml = ET.parse(indata)
 		payload = json.loads(outxml.find("html_content").text)
@@ -33,14 +32,12 @@ class FetchTube:
 
 def get_comments(fetcher):
 	while True:
+		lastfetch = time.time()
 		comments, sleeptime = fetcher.fetch()
 		for c in comments:
-			print(c)
 			yield c["comment"]
-		time.sleep(min(sleeptime / 1000, 0.2))
+		sltime = min(sleeptime / 1000, 0.2)
+		elapsedtime = time.time() - lastfetch
+		if elapsedtime < sltime:
+			time.sleep(sltime - elapsedtime)
 
-#for c in get_comments():
-#	print(c)
-fetcher = FetchTube("3AsO2f9oxP0")
-for comment in get_comments(fetcher):
-	print(comment)
